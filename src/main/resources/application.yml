@@ -1,0 +1,8 @@
+server:
+  error:
+    include-message: always
+
+partner-service:
+  instrument-stream-url: ws://localhost:8032/instruments
+  quote-stream-url: ws://localhost:8032/quotes
+
