@@ -9,7 +9,7 @@ import org.http4k.core.Uri
 import org.http4k.websocket.Websocket
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import org.traderepublic.candlesticks.domain.QuoteEvent
+import org.traderepublic.candlesticks.models.QuoteEvent
 import org.traderepublic.candlesticks.utils.ObjectMapperUtil.Companion.getObjectMapper
 
 @Component

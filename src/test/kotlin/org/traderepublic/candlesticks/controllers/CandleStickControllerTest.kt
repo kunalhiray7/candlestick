@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.traderepublic.candlesticks.domain.Candlestick
+import org.traderepublic.candlesticks.models.Candlestick
 import org.traderepublic.candlesticks.services.CandleStickService
 import org.traderepublic.candlesticks.utils.ObjectMapperUtil.Companion.getObjectMapper
 import java.time.Instant

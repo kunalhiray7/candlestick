@@ -1,4 +1,4 @@
-package org.traderepublic.candlesticks.domain
+package org.traderepublic.candlesticks.models
 
 import java.time.Instant
 

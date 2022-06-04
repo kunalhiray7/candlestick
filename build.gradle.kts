@@ -33,6 +33,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-web")
   implementation("org.springframework.boot:spring-boot-starter-validation")
+  implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
   implementation(platform("org.http4k:http4k-bom:4.13.1.0"))
   implementation("org.http4k:http4k-core")
@@ -43,6 +44,9 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${DependencyVersions.coroutines}")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${DependencyVersions.jackson}")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${DependencyVersions.jackson}")
+
+  runtimeOnly("com.h2database:h2")
+
   testImplementation("io.mockk:mockk:${DependencyVersions.mockk}")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
