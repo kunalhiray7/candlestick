@@ -1,0 +1,10 @@
+2022-06-04 23:32:32 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM INSTRUMENT INSTRUMENT QUOTE[*] QUOTE"; SQL statement:
+SELECT * FROM INSTRUMENT INSTRUMENT QUOTE QUOTE [42000-200]
+2022-06-04 23:33:03 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM INSTRUMENT
+
+SELECT[*] * FROM QUOTE"; SQL statement:
+select * from instrument
+
+select * from quote [42000-200]

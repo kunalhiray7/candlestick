@@ -8,10 +8,17 @@ import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
 import org.traderepublic.candlesticks.models.InstrumentEvent
 import org.traderepublic.candlesticks.entities.Instrument
+import org.traderepublic.candlesticks.entities.Quote
+import org.traderepublic.candlesticks.models.QuoteEvent
 import org.traderepublic.candlesticks.repositories.InstrumentRepository
+import org.traderepublic.candlesticks.repositories.QuoteRepository
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 class CandleStickServiceTest {
+
+    @Mock
+    private lateinit var quoteRepository: QuoteRepository
 
     @Mock
     private lateinit var instrumentRepository: InstrumentRepository
@@ -43,5 +50,31 @@ class CandleStickServiceTest {
         service.handleInstrumentEvent(instrumentEvent)
 
         verify(instrumentRepository, times(1)).delete(instrument)
+    }
+
+    @Test
+    fun `handleQuoteEvent() should call repository to save the quotes`() {
+        val quoteEvent = QuoteEvent(org.traderepublic.candlesticks.models.Quote(isin = "123abc", price = 123.0))
+        val instrument = Instrument(isin = quoteEvent.data.isin, description = "new instrument")
+        val quote = Quote(price = quoteEvent.data.price, instrument = instrument)
+        doReturn(Optional.of(instrument)).`when`(instrumentRepository).findById(quoteEvent.data.isin)
+
+        service.handleQuoteEvent(quoteEvent)
+
+        verify(instrumentRepository, times(1)).findById(quoteEvent.data.isin)
+        verify(quoteRepository, times(1)).save(quote)
+    }
+
+    @Test
+    fun `handleQuoteEvent() should not call repository to save the quotes if corresponding instrument does not exist`() {
+        val quoteEvent = QuoteEvent(org.traderepublic.candlesticks.models.Quote(isin = "123abc", price = 123.0))
+        val instrument = Instrument(isin = quoteEvent.data.isin, description = "new instrument")
+        val quote = Quote(price = quoteEvent.data.price, instrument = instrument)
+        doReturn(Optional.ofNullable(null)).`when`(instrumentRepository).findById(quoteEvent.data.isin)
+
+        service.handleQuoteEvent(quoteEvent)
+
+        verify(instrumentRepository, times(1)).findById(quoteEvent.data.isin)
+        verify(quoteRepository, times(0)).save(quote)
     }
 }

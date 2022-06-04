@@ -6,10 +6,6 @@ plugins {
   application
 }
 
-application {
-  mainClass.set("CandleSticksMain")
-}
-
 group = "org.traderepublic.candlesticks"
 version = "1.1.1"
 java.sourceCompatibility = JavaVersion.VERSION_11
