@@ -24,3 +24,5 @@ partner-service:
   instrument-stream-url: ws://localhost:8032/instruments
   quote-stream-url: ws://localhost:8032/quotes
 
+app:
+  quote-fetch-threshold-in-seconds: 1800
