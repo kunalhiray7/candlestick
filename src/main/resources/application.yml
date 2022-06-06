@@ -19,6 +19,7 @@ spring:
 server:
   error:
     include-message: always
+  port: 9000
 
 partner-service:
   instrument-stream-url: ws://localhost:8032/instruments

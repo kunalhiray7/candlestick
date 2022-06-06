@@ -3,6 +3,7 @@ package org.traderepublic.candlesticks.services
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.traderepublic.candlesticks.constants.AppConstants.Companion.MIN_MILLIS_BEFORE_SECOND
 import org.traderepublic.candlesticks.constants.AppConstants.Companion.MIN_SECONDS_BEFORE_NEXT_CANDLESTICK
 import org.traderepublic.candlesticks.constants.AppConstants.Companion.SECONDS_TO_NEXT_CANDLESTICK
 import org.traderepublic.candlesticks.constants.AppConstants.Companion.SECONDS_TO_NEXT_TO_NEXT_CANDLESTICK
@@ -46,10 +47,11 @@ class CandleStickService(
         val chunks = mutableMapOf<Instant, List<Quote>>()
 
         while (floorTimestamp.isBefore(ceilTimestamp)) {
-            nextTimestamp = floorTimestamp.plusSeconds(MIN_SECONDS_BEFORE_NEXT_CANDLESTICK)
+            nextTimestamp = floorTimestamp.plusSeconds(MIN_SECONDS_BEFORE_NEXT_CANDLESTICK).plusMillis(
+                MIN_MILLIS_BEFORE_SECOND)
             val chunk = sortedQuotes.groupBy { it.creationTimestamp in floorTimestamp..nextTimestamp }
             chunk[true]?.let { chunks.put(floorTimestamp, it) }
-            floorTimestamp = nextTimestamp.plusSeconds(1)
+            floorTimestamp = nextTimestamp.plusMillis(1)
         }
         logger.info("Number of chunks created: ${chunks.size}")
         return chunksToCandleSticks(chunks)

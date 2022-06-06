@@ -1,5 +1,6 @@
 package org.traderepublic.candlesticks.listeners
 
+import org.slf4j.LoggerFactory
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
@@ -12,10 +13,12 @@ class QuoteEventListener(
     private val quoteService: QuoteService
 ) {
 
+    private val logger = LoggerFactory.getLogger(QuoteEventListener::class.java)
+
     @EventListener(ApplicationReadyEvent::class)
     fun listenAfterStartup() {
         quoteStream.connect { event ->
-            println(event)
+            logger.info("Received quote event: $event")
             quoteService.handleQuoteEvent(event)
         }
     }

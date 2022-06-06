@@ -111,7 +111,7 @@ To run the app you can use the following gradle commands
 ```
 ./gradlew build
 ./gradlew test
-./gradlew run
+./gradlew bootrun
 ```
 
 Once the server is running you can check the results at
@@ -192,3 +192,6 @@ The following questions will give you a hint on what to think about for the code
 
 - How would you change the system to provide scaling capabilities to 50.000 (or more) available instruments, each streaming quotes between once per second and every few seconds?
 - How could this system be build in a way that supports failover capabilities so that multiple instances of the system could run simultaneously?
+
+## Run Instruction
+Refer [HELP](./HELP.md) file for run and other instructions.

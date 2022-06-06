@@ -33,7 +33,6 @@ dependencies {
 
   implementation(platform("org.http4k:http4k-bom:4.13.1.0"))
   implementation("org.http4k:http4k-core")
-  implementation("org.http4k:http4k-server-netty")
   implementation("org.http4k:http4k-client-websocket:${DependencyVersions.http4k}")
   implementation("org.http4k:http4k-format-jackson:${DependencyVersions.http4k}")
 
@@ -43,7 +42,6 @@ dependencies {
 
   runtimeOnly("com.h2database:h2")
 
-  testImplementation("io.mockk:mockk:${DependencyVersions.mockk}")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 }
