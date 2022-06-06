@@ -21,9 +21,9 @@ class CandleStickService(
 
     fun getCandleSticks(isin: String): List<Candlestick> {
         val creationTimestampThreshold = Instant.now().minusSeconds(quoteFetchThresholdInSeconds)
-        println(creationTimestampThreshold)
         val quotes = quoteRepository.findAllByIsinAndWithCreationDateTimeAfter(isin, creationTimestampThreshold)
-        return prepareCandleSticks(quotes)
+        logger.info("Total number of quotes found for ISIN: $isin and creationTimestampThreshold: $creationTimestampThreshold are: ${quotes.size}")
+        return if (quotes.isEmpty()) emptyList() else prepareCandleSticks(quotes)
     }
 
     private fun prepareCandleSticks(quotes: List<Quote>): List<Candlestick> {
@@ -39,20 +39,34 @@ class CandleStickService(
             chunk[true]?.let { chunks.put(floorTimestamp, it) }
             floorTimestamp = nextTimestamp.plusSeconds(1)
         }
-
+        logger.info("No of chunks created: ${chunks.size}")
         return chunksToCandleSticks(chunks)
     }
 
-    private fun chunksToCandleSticks(chunks: MutableMap<Instant, List<Quote>>) = chunks.map {
-        Candlestick(
-            openTimestamp = it.key,
-            closeTimestamp = getCeilTimestamp(it.value.last()),
-            openPrice = it.value.first().price,
-            highPrice = it.value.maxOf { q -> q.price },
-            lowPrice = it.value.minOf { q -> q.price },
-            closingPrice = it.value.last().price
-        )
+    private fun chunksToCandleSticks(chunks: MutableMap<Instant, List<Quote>>): List<Candlestick> {
+
+        var prevChunkOpeningTime: Instant? = null
+        val candleSticks = mutableListOf<Candlestick>()
+
+        chunks.forEach { (k, v) ->
+            if(prevChunkOpeningTime != null && !prevChunkOpeningTime!!.plusSeconds(60).equals(k)) {
+                candleSticks.add(toSingleCandleStick(prevChunkOpeningTime!!.plusSeconds(60), chunks[prevChunkOpeningTime]!!, prevChunkOpeningTime!!.plusSeconds(120)))
+            }
+            candleSticks.add(toSingleCandleStick(k, v, getCeilTimestamp(v.last())))
+            prevChunkOpeningTime = k
+        }
+
+        return candleSticks
     }
+
+    private fun toSingleCandleStick(openTimestamp: Instant, value: List<Quote>, closeTimestamp: Instant) = Candlestick(
+        openTimestamp = openTimestamp,
+        closeTimestamp = closeTimestamp,
+        openPrice = value.first().price,
+        highPrice = value.maxOf { q -> q.price },
+        lowPrice = value.minOf { q -> q.price },
+        closingPrice = value.last().price
+    )
 
     private fun getFloorTimeStamp(quote: Quote): Instant {
         val zdt = ZonedDateTime.ofInstant(quote.creationTimestamp, ZoneId.of("UTC"))

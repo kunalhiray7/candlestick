@@ -102,4 +102,38 @@ class CandleStickServiceTest {
         assertEquals(9.0, secondCandleStick.closingPrice)
         assertEquals(LocalDateTime.of(2019, 2, 5, 13, 2, 0).toInstant(ZoneOffset.UTC), secondCandleStick.closeTimestamp)
     }
+
+    @Test
+    fun `getCandleSticks() should return empty list if no quotes found for given isin and time threshold`() {
+        val isin = "123abc"
+        doReturn(emptyList<Quote>()).`when`(quoteRepository).findAllByIsinAndWithCreationDateTimeAfter(any(), any())
+
+        val candleSticks = service.getCandleSticks(isin)
+
+        assertTrue(candleSticks.isEmpty())
+    }
+
+    @Test
+    fun `getCandleSticks() should fill previous chunk candlesticks if current chunk is empty`() {
+        val instrument = Instrument(isin = "123ABC", description = "Some instrument")
+        val quotes = listOf(
+            Quote(1L, 10.0, LocalDateTime.of(2019, 2, 5, 13, 0, 5).toInstant(ZoneOffset.UTC), instrument),
+            Quote(1L, 11.0, LocalDateTime.of(2019, 2, 5, 13, 1, 6).toInstant(ZoneOffset.UTC), instrument),
+            Quote(1L, 12.0, LocalDateTime.of(2019, 2, 5, 13, 3, 13).toInstant(ZoneOffset.UTC), instrument),
+            Quote(1L, 13.0, LocalDateTime.of(2019, 2, 5, 13, 4, 19).toInstant(ZoneOffset.UTC), instrument),
+        )
+        doReturn(quotes).`when`(quoteRepository).findAllByIsinAndWithCreationDateTimeAfter(any(), any())
+
+        val candleSticks = service.getCandleSticks(instrument.isin)
+
+        assertEquals(5, candleSticks.size)
+        val secondCandleStick = candleSticks[1]
+        val thirdCandleStick = candleSticks[2]
+        assertEquals(secondCandleStick.openTimestamp.plusSeconds(60), thirdCandleStick.openTimestamp)
+        assertEquals(secondCandleStick.openPrice, thirdCandleStick.openPrice)
+        assertEquals(secondCandleStick.closingPrice, thirdCandleStick.closingPrice)
+        assertEquals(secondCandleStick.highPrice, thirdCandleStick.highPrice)
+        assertEquals(secondCandleStick.lowPrice, thirdCandleStick.lowPrice)
+        assertEquals(secondCandleStick.closeTimestamp.plusSeconds(60), thirdCandleStick.closeTimestamp)
+    }
 }
