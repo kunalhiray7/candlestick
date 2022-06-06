@@ -1,4 +1,4 @@
-package utils
+package org.traderepublic.candlesticks.utils
 
 import org.mockito.ArgumentCaptor
 

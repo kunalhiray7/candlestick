@@ -13,7 +13,7 @@ import org.traderepublic.candlesticks.entities.Instrument
 import org.traderepublic.candlesticks.entities.Quote
 import org.traderepublic.candlesticks.models.ISIN
 import org.traderepublic.candlesticks.repositories.QuoteRepository
-import utils.TestUtil.Companion.capture
+import org.traderepublic.candlesticks.utils.TestUtil.Companion.capture
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset

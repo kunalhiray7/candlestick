@@ -14,7 +14,7 @@ import org.traderepublic.candlesticks.models.Quote
 import org.traderepublic.candlesticks.models.QuoteEvent
 import org.traderepublic.candlesticks.repositories.InstrumentRepository
 import org.traderepublic.candlesticks.repositories.QuoteRepository
-import utils.TestUtil.Companion.capture
+import org.traderepublic.candlesticks.utils.TestUtil.Companion.capture
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)

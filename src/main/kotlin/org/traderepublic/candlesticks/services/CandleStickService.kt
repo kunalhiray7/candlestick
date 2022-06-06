@@ -39,20 +39,28 @@ class CandleStickService(
             chunk[true]?.let { chunks.put(floorTimestamp, it) }
             floorTimestamp = nextTimestamp.plusSeconds(1)
         }
-        logger.info("No of chunks created: ${chunks.size}")
+        logger.info("Number of chunks created: ${chunks.size}")
         return chunksToCandleSticks(chunks)
     }
 
     private fun chunksToCandleSticks(chunks: MutableMap<Instant, List<Quote>>): List<Candlestick> {
 
-        var prevChunkOpeningTime: Instant? = null
+        var prevChunkOpeningTime: Instant = Instant.MIN
         val candleSticks = mutableListOf<Candlestick>()
 
         chunks.forEach { (k, v) ->
-            if(prevChunkOpeningTime != null && !prevChunkOpeningTime!!.plusSeconds(60).equals(k)) {
-                candleSticks.add(toSingleCandleStick(prevChunkOpeningTime!!.plusSeconds(60), chunks[prevChunkOpeningTime]!!, prevChunkOpeningTime!!.plusSeconds(120)))
+            val plausibleCandleStickOpenTimestampForNoData = prevChunkOpeningTime.plusSeconds(60)
+            if (prevChunkOpeningTime != Instant.MIN && !plausibleCandleStickOpenTimestampForNoData.equals(k)) {
+                logger.info("Found a candlestick with no data at $plausibleCandleStickOpenTimestampForNoData")
+                candleSticks.add(
+                    toSingleCandleStick(
+                        openTimestamp = plausibleCandleStickOpenTimestampForNoData,
+                        value = chunks[prevChunkOpeningTime]!!,
+                        closeTimestamp = prevChunkOpeningTime.plusSeconds(120)
+                    )
+                )
             }
-            candleSticks.add(toSingleCandleStick(k, v, getCeilTimestamp(v.last())))
+            candleSticks.add(toSingleCandleStick(openTimestamp = k, value = v, closeTimestamp = getCeilTimestamp(v.last())))
             prevChunkOpeningTime = k
         }
 

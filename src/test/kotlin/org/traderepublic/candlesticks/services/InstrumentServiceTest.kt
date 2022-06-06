@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.traderepublic.candlesticks.entities.Instrument
 import org.traderepublic.candlesticks.models.InstrumentEvent
 import org.traderepublic.candlesticks.repositories.InstrumentRepository
-import utils.TestUtil.Companion.capture
+import org.traderepublic.candlesticks.utils.TestUtil.Companion.capture
 
 @ExtendWith(MockitoExtension::class)
 class InstrumentServiceTest {

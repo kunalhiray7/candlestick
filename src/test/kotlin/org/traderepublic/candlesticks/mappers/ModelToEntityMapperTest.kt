@@ -1,8 +1,6 @@
 package org.traderepublic.candlesticks.mappers
 
 import org.junit.jupiter.api.Test
-import org.traderepublic.candlesticks.mappers.ModelToEntityMapper.Companion.toInstrumentEntity
-import org.traderepublic.candlesticks.mappers.ModelToEntityMapper.Companion.toQuoteEntity
 import org.traderepublic.candlesticks.models.Instrument
 import org.traderepublic.candlesticks.models.InstrumentEvent
 import org.traderepublic.candlesticks.models.InstrumentEvent.Type.ADD
@@ -18,7 +16,7 @@ class ModelToEntityMapperTest {
         val description = "New Event"
         val instrumentEvent = InstrumentEvent(ADD, Instrument(isin, description))
 
-        val instrumentEntity = toInstrumentEntity(instrumentEvent)
+        val instrumentEntity = ModelToEntityMapper.toInstrumentEntity(instrumentEvent)
 
         assertEquals(isin, instrumentEntity.isin)
         assertEquals(description, instrumentEntity.description)
@@ -28,7 +26,7 @@ class ModelToEntityMapperTest {
     fun `should return correct quote entity from given quote event`() {
         val quoteEvent = QuoteEvent(Quote(isin = "123abc", price = 123.0))
 
-        val quoteEntity = toQuoteEntity(quoteEvent)
+        val quoteEntity = ModelToEntityMapper.toQuoteEntity(quoteEvent)
 
         assertEquals(quoteEvent.data.price, quoteEntity.price)
     }
