@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.traderepublic.candlesticks.exceptions.NoInstrumentFoundException
 import org.traderepublic.candlesticks.models.Candlestick
 import org.traderepublic.candlesticks.services.CandleStickService
 import org.traderepublic.candlesticks.utils.ObjectMapperUtil.Companion.getObjectMapper
@@ -61,5 +62,16 @@ class CandleStickControllerTest {
             status { isBadRequest() }
         }
         verify(candleStickService, times(0)).getCandleSticks(isin)
+    }
+
+    @Test
+    fun `GET should return Not Found when no instrument found for given ISIN`() {
+        val isin = "12345"
+        doThrow(NoInstrumentFoundException("No instrument found!")).`when`(candleStickService).getCandleSticks(isin)
+
+        mockMvc.get("/candlesticks?isin=$isin").andExpect {
+            status { isNotFound() }
+        }
+        verify(candleStickService, times(1)).getCandleSticks(isin)
     }
 }
